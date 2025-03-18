@@ -11,12 +11,14 @@ contract Testamm is Test{
  function setUp() public{
     amm =new Amm();  
  }
+
 function testdeployment()external view {
 assertEq(amm.s_tokensupplychange(amm.gettoken1()),100000 ether);
 assertEq(amm.s_tokensupplychange(amm.gettoken2()),100000 ether);
 assertEq(amm.gettoken2price(),1 ether);
 assertEq(amm.gettoken1price(),1 ether);
 }
+
 function testdeposit()external {
     uint256 alpha=2 ether;
     uint256 home =1 ether;
@@ -25,6 +27,7 @@ function testdeposit()external {
     vm.expectRevert();
     amm.deposit(alpha,home,token2,token1);
 }
+
 function testmain()external{
     address token =makeAddr("token");
     uint256 amount =5 ;
