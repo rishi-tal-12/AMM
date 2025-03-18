@@ -2,6 +2,7 @@
 pragma solidity ^0.8.28;
 import {Token1} from "src/Token.sol";
 import {Token2} from "src/Token.sol";
+import{console} from "lib/forge-std/src/console.sol";
 contract Amm{
     error Not_correcttoken();
     Token1 token1;
@@ -31,6 +32,7 @@ contract Amm{
     }
 
  function main(address token,uint256 amount) public  returns(uint256){
+    uint256 initialK = s_tokensupplychange[address(token1)] * s_tokensupplychange[address(token2)];
     if(token != address(token1)  && token != address(token2)){
         revert Not_correcttoken();
     }
@@ -38,20 +40,23 @@ contract Amm{
 uint256 intialsupplyoftoken1=s_tokensupplychange[address(token1)];
 uint256 intialsupplyoftoken2=s_tokensupplychange[address(token2)];
 uint256 finalsupplyoftoken1=amount+intialsupplyoftoken1 ;
-uint256 finalsupplyoftoken2= (1e46)/finalsupplyoftoken1;
+uint256 finalsupplyoftoken2= ((intialsupplyoftoken1)*(intialsupplyoftoken2))/finalsupplyoftoken1;
 s_tokensupplychange[address(token1)]=finalsupplyoftoken1;
 s_tokensupplychange[address (token2)]=finalsupplyoftoken2;
-return intialsupplyoftoken2-((1e46)/finalsupplyoftoken1);
+return intialsupplyoftoken2-(((intialsupplyoftoken1)*(intialsupplyoftoken2))/finalsupplyoftoken1);
     }
      if(token ==address(token2)){
 uint256 intialsupplyoftoken1=s_tokensupplychange[address(token1)];
 uint256 intialsupplyoftoken2=s_tokensupplychange[address(token2)];
 uint256 finalsupplyoftoken2=amount+intialsupplyoftoken2 ;
-uint256 finalsupplyoftoken1= (1e46)/finalsupplyoftoken2;
+uint256 finalsupplyoftoken1= ((intialsupplyoftoken1)*(intialsupplyoftoken2)) /finalsupplyoftoken2;
 s_tokensupplychange[address(token1)]=finalsupplyoftoken1;
 s_tokensupplychange[address (token2)]=finalsupplyoftoken2;
-return intialsupplyoftoken1-((1e46)/finalsupplyoftoken2);
+return intialsupplyoftoken1-(((intialsupplyoftoken1)*(intialsupplyoftoken2))/finalsupplyoftoken2);
     }
+    uint256 finalK = s_tokensupplychange[address(token1)] * s_tokensupplychange[address(token2)];
+     console.log("Initial K:", initialK);
+    console.log("Final K:", finalK);
  }
  function valueoftoken1(address token)public view returns(uint256){
     if(token ==address(token1)){
